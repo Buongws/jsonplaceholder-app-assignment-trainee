@@ -1,0 +1,98 @@
+.user-section {
+  flex: 1;
+  min-width: 250px;
+  margin-right: 30px;
+  margin-bottom: 40px;
+
+  p {
+    font-size: 16px;
+    font-weight: 400;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+
+    span {
+      flex: 0 0 25%;
+      font-weight: normal;
+    }
+
+    strong {
+      flex: 0 0 75%;
+      font-weight: bold;
+      text-align: left;
+    }
+  }
+
+  h2 {
+    font-size: 24px;
+    color: rgb(13, 202, 240);
+  }
+}
+
+@media screen and (max-width: 980px) {
+  .company {
+    span {
+      flex: 0 0 45% !important;
+    }
+
+    strong {
+      flex: 0 0 55% !important;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .company {
+    span {
+      flex: 0 0 25% !important;
+    }
+
+    strong {
+      flex: 0 0 75% !important;
+    }
+  }
+}
+
+.submit-button-disable {
+  background-color: #28a745 !important;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: not-allowed;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-right: 10px;
+  opacity: 0.65;
+}
+
+.user-photo-albums {
+  border-top: 1px solid #dee2e6 !important;
+  padding-bottom: 20px;
+
+  .user-photo-form {
+    padding-right: 10px;
+    width: 50%;
+
+    button {
+      font-size: 20px;
+      flex: 0 0 25%;
+    }
+  }
+
+  .input-group {
+    width: 50%;
+  }
+
+  h2 {
+    margin: 24px 0;
+  }
+
+  .user-photo-title {
+    h4 {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: 500;
+    }
+  }
+}
