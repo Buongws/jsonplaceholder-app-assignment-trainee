@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { fetchPhotoUsersByUserId, addPhotoUser, deletePhotoUserById } from '../api/photoApi'
 import { PhotoUsers } from '../types/PhotoUsers'
 import { Button, Form, Row, Col } from 'react-bootstrap'
+import { v4 as uuidv4 } from 'uuid' // For generating unique IDs
 
 interface UserPhotoAlbumsProps {
   userId: string
@@ -26,7 +27,10 @@ const UserPhotoAlbums: React.FC<UserPhotoAlbumsProps> = ({ userId }) => {
 
   const handleAddAlbum = async () => {
     if (!newAlbumTitle.trim()) return
-    const newAlbum = { userId, title: newAlbumTitle, id: Math.random().toString() } as PhotoUsers
+
+    // Generate unique ID using uuid for new albums
+    const newAlbum = { userId, title: newAlbumTitle, id: uuidv4() } as PhotoUsers
+
     try {
       const addedAlbum = await addPhotoUser(newAlbum)
       setAlbums((prevAlbums) => [...prevAlbums, addedAlbum])
@@ -38,7 +42,8 @@ const UserPhotoAlbums: React.FC<UserPhotoAlbumsProps> = ({ userId }) => {
 
   const handleDeleteAlbum = async (albumId: string) => {
     try {
-      await deletePhotoUserById(albumId)
+      await deletePhotoUserById(albumId) // Correctly reference the id for deletion
+      // Correctly filter out the album with the matching ID from the local state
       setAlbums((prevAlbums) => prevAlbums.filter((album) => album.id !== albumId))
     } catch (error) {
       console.error(`Error deleting album with ID ${albumId}:`, error)
@@ -66,8 +71,10 @@ const UserPhotoAlbums: React.FC<UserPhotoAlbumsProps> = ({ userId }) => {
       </div>
       <Row>
         {albums.map((album, index) => (
-          <Col xs={12} sm={6} className='mb-3' key={album.id}>
-            <div className='d-flex items-center justify-content-between border rounded text-decoration-none text-black '>
+          <Col xs={12} sm={6} className='mb-3' key={`${album.id}-${index}`}>
+            {' '}
+            {/* Use a combination of id and index as key */}
+            <div className='d-flex items-center justify-content-between border rounded text-decoration-none text-black'>
               <div className='py-2 flex-shrink-0 border-end d-flex items-center justify-content-center w-10'>
                 {index + 1}
               </div>
