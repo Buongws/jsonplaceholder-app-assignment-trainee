@@ -7,14 +7,10 @@
 }
 
 .headerNav a {
-  font-size: 18px;
+  font-size: 16px;
   color: white;
   font-weight: bold;
   transition: color 0.3s ease;
-}
-
-.headerNav a:hover {
-  color: #f39c12;
 }
 
 /* Table styles */
@@ -59,37 +55,3 @@ tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.1);
   cursor: pointer;
 }
-
-/* Table responsiveness for small screens */
-/* @media screen and (max-width: 768px) {
-  table,
-  th,
-  td {
-    display: block;
-    width: 100%;
-  }
-
-  th {
-    display: none;
-  }
-
-  td {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 15px;
-    border-bottom: 1px solid #ddd;
-  }
-
-  td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    color: #333;
-    margin-right: 10px;
-  }
-
-  tr {
-    margin-bottom: 15px;
-    display: block;
-    border: 1px solid #ddd;
-  }
-} */

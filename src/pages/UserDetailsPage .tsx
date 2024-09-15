@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { User } from '../types/User'
 import { fetchUserById, updateUserById } from '../api/userApi'
@@ -10,40 +10,41 @@ import '../styles/UserDetailsPage.css'
 
 const UserDetailsPage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>()
-  const [user, setUser] = useState<User | null>(null)
-  const [originalUser, setOriginalUser] = useState<User | null>(null)
+  if (!userId) {
+    return <h1>Details for user with ID: {userId}</h1>
+  }
+  const [user, setUser] = useState<Partial<User>>({})
+  const [originalUser, setOriginalUser] = useState<Partial<User>>({})
   const [loading, setLoading] = useState<boolean>(true)
   const [isEditing, setIsEditing] = useState<boolean>(false)
 
   useEffect(() => {
+    setLoading(true)
     const loadUser = async () => {
       try {
         const data = await fetchUserById(userId)
         setUser(data)
-        setOriginalUser(data) // Set original data to compare changes
+        setOriginalUser(data)
         setLoading(false)
       } catch (error) {
         console.error('Error fetching user details', error)
-        setLoading(false)
       }
     }
 
     loadUser()
   }, [userId])
 
-  const handleEditClick = () => {
+  const handleEditClick = useCallback(() => {
     setIsEditing(true)
-  }
+  }, [])
 
-  const handleCancelClick = () => {
+  const handleCancelClick = useCallback(() => {
     setIsEditing(false)
     setUser(originalUser)
-  }
+  }, [originalUser])
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    if (!user) return
 
     const updatedData = {
       email: user.email,
@@ -52,7 +53,7 @@ const UserDetailsPage: React.FC = () => {
     }
 
     try {
-      const response = await updateUserById(userId, updatedData)
+      const response = await updateUserById(userId, updatedData as User)
       setUser(response)
       setOriginalUser(response)
       setIsEditing(false)
@@ -61,27 +62,18 @@ const UserDetailsPage: React.FC = () => {
     }
   }
 
-  const handleChange = (field: keyof User, value: string) => {
-    setUser((prevUser) => (prevUser ? { ...prevUser, [field]: value } : null))
-  }
+  const handleChange = useCallback((field: keyof User, value: string) => {
+    setUser((prevUser) => ({ ...prevUser, [field]: value }))
+  }, [])
 
-  const isFormModified = () => {
-    if (!user || !originalUser) return false
+  const isFormModified = useCallback(() => {
     return (
       user.email !== originalUser.email || user.phone !== originalUser.phone || user.website !== originalUser.website
     )
-  }
+  }, [user, originalUser])
 
   if (loading) {
     return <LoadingScreen />
-  }
-
-  if (!user) {
-    return <div>User not found</div>
-  }
-
-  if (!userId) {
-    return <div>Error: User ID is required</div>
   }
 
   return (
@@ -105,29 +97,29 @@ const UserDetailsPage: React.FC = () => {
             <div className='user-section mb-4'>
               <h2>Address:</h2>
               <p className='d-flex justify-content-between'>
-                <span>Street:</span> <strong>{user.address.street}</strong>
+                <span>Street:</span> <strong>{user.address?.street}</strong>
               </p>
               <p className='d-flex justify-content-between'>
-                <span>Suite:</span> <strong>{user.address.suite}</strong>
+                <span>Suite:</span> <strong>{user.address?.suite}</strong>
               </p>
               <p className='d-flex justify-content-between'>
-                <span>City:</span> <strong>{user.address.city}</strong>
+                <span>City:</span> <strong>{user.address?.city}</strong>
               </p>
               <p className='d-flex justify-content-between'>
-                <span>Zipcode:</span> <strong>{user.address.zipcode}</strong>
+                <span>Zipcode:</span> <strong>{user.address?.zipcode}</strong>
               </p>
             </div>
 
             <div className='user-section mb-4'>
               <h2>Company:</h2>
               <p className='d-flex justify-content-between company'>
-                <span>Name:</span> <strong>{user.company.name}</strong>
+                <span>Name:</span> <strong>{user.company?.name}</strong>
               </p>
               <p className='d-flex justify-content-between company'>
-                <span>CatchPhrase:</span> <strong>{user.company.catchPhrase}</strong>
+                <span>CatchPhrase:</span> <strong>{user.company?.catchPhrase}</strong>
               </p>
               <p className='d-flex justify-content-between company'>
-                <span>Bs:</span> <strong>{user.company.bs}</strong>
+                <span>Bs:</span> <strong>{user.company?.bs}</strong>
               </p>
             </div>
           </div>
@@ -143,7 +135,7 @@ const UserDetailsPage: React.FC = () => {
                     <Form.Label>Email:</Form.Label>
                     <Form.Control
                       type='email'
-                      value={user.email}
+                      value={user.email || ''}
                       onChange={(e) => handleChange('email', e.target.value)}
                     />
                   </Form.Group>
@@ -152,7 +144,7 @@ const UserDetailsPage: React.FC = () => {
                     <Form.Label>Phone:</Form.Label>
                     <Form.Control
                       type='tel'
-                      value={user.phone}
+                      value={user.phone || ''}
                       onChange={(e) => handleChange('phone', e.target.value)}
                     />
                   </Form.Group>
@@ -161,7 +153,7 @@ const UserDetailsPage: React.FC = () => {
                     <Form.Label>Website:</Form.Label>
                     <Form.Control
                       type='text'
-                      value={user.website}
+                      value={user.website || ''}
                       onChange={(e) => handleChange('website', e.target.value)}
                     />
                   </Form.Group>
@@ -182,13 +174,13 @@ const UserDetailsPage: React.FC = () => {
               ) : (
                 <>
                   <p className='d-flex justify-content-between'>
-                    <span>Email:</span> <strong>{user.email}</strong>
+                    <span>Email:</span> <strong>{user.email || 'No Email'}</strong>
                   </p>
                   <p className='d-flex justify-content-between'>
-                    <span>Website:</span> <strong>{user.website}</strong>
+                    <span>Website:</span> <strong>{user.website || 'No Website'}</strong>
                   </p>
                   <p className='d-flex justify-content-between'>
-                    <span>Phone:</span> <strong>{user.phone}</strong>
+                    <span>Phone:</span> <strong>{user.phone || 'No Phone'}</strong>
                   </p>
                   <Button variant='success' className='mt-3' onClick={handleEditClick}>
                     Edit

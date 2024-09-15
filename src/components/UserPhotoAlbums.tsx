@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { fetchPhotoUsersByUserId, addPhotoUser, deletePhotoUserById } from '../api/photoApi'
+import React, { useCallback, useEffect, useState } from 'react'
+import { fetchPhotoUsersByUserId, addPhotoUser, deletePhotoUserById } from '../api/userPhotoAlbumsApi'
 import { PhotoUsers } from '../types/PhotoUsers'
 import { Button, Form, Row, Col } from 'react-bootstrap'
-import { v4 as uuidv4 } from 'uuid' // For generating unique IDs
 
 interface UserPhotoAlbumsProps {
   userId: string
@@ -25,30 +24,30 @@ const UserPhotoAlbums: React.FC<UserPhotoAlbumsProps> = ({ userId }) => {
     loadPhotoAlbums()
   }, [userId])
 
-  const handleAddAlbum = async () => {
+  const handleAddAlbum = useCallback(async () => {
     if (!newAlbumTitle.trim()) return
-
-    // Generate unique ID using uuid for new albums
-    const newAlbum = { userId, title: newAlbumTitle, id: uuidv4() } as PhotoUsers
+    const customId = `newAlbum${albums.length + 1}`
+    const newAlbum = { userId, id: customId, title: newAlbumTitle } as PhotoUsers
 
     try {
       const addedAlbum = await addPhotoUser(newAlbum)
       setAlbums((prevAlbums) => [...prevAlbums, addedAlbum])
-      setNewAlbumTitle('') // Clear the input field
+      setNewAlbumTitle('')
     } catch (error) {
       console.error('Error adding album:', error)
+    } finally {
     }
-  }
+  }, [newAlbumTitle, albums, userId])
 
-  const handleDeleteAlbum = async (albumId: string) => {
+  const handleDeleteAlbum = useCallback(async (albumId: string) => {
     try {
-      await deletePhotoUserById(albumId) // Correctly reference the id for deletion
-      // Correctly filter out the album with the matching ID from the local state
+      await deletePhotoUserById(albumId)
       setAlbums((prevAlbums) => prevAlbums.filter((album) => album.id !== albumId))
     } catch (error) {
       console.error(`Error deleting album with ID ${albumId}:`, error)
+    } finally {
     }
-  }
+  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewAlbumTitle(e.target.value)
@@ -72,8 +71,6 @@ const UserPhotoAlbums: React.FC<UserPhotoAlbumsProps> = ({ userId }) => {
       <Row>
         {albums.map((album, index) => (
           <Col xs={12} sm={6} className='mb-3' key={`${album.id}-${index}`}>
-            {' '}
-            {/* Use a combination of id and index as key */}
             <div className='d-flex items-center justify-content-between border rounded text-decoration-none text-black'>
               <div className='py-2 flex-shrink-0 border-end d-flex items-center justify-content-center w-10'>
                 {index + 1}
@@ -92,4 +89,4 @@ const UserPhotoAlbums: React.FC<UserPhotoAlbumsProps> = ({ userId }) => {
   )
 }
 
-export default UserPhotoAlbums
+export default React.memo(UserPhotoAlbums)

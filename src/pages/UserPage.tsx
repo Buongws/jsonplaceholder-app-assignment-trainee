@@ -3,8 +3,8 @@ import { fetchUsers } from '../api/userApi'
 import { User } from '../types/User'
 import UserTable from '../components/UserTable'
 import LoadingScreen from '../components/LoadingScreen'
-import { Container } from 'react-bootstrap' // Import Container
 
+import { Container } from 'react-bootstrap'
 import '../styles/UserPage.css'
 
 const UserPage: React.FC = () => {

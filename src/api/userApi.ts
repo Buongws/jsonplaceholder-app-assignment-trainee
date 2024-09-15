@@ -13,7 +13,7 @@ export const fetchUsers = async (): Promise<User[]> => {
   }
 }
 
-export const fetchUserById = async (userId: string | undefined): Promise<User> => {
+export const fetchUserById = async (userId: string): Promise<User> => {
   try {
     const response = await axios.get(`${API_URL}/${userId}`)
     return response.data
@@ -23,7 +23,7 @@ export const fetchUserById = async (userId: string | undefined): Promise<User> =
   }
 }
 
-export const updateUserById = async (userId: string | undefined, updatedData: Partial<User>): Promise<User> => {
+export const updateUserById = async (userId: string, updatedData: Partial<User>): Promise<User> => {
   try {
     const response = await axios.patch(`${API_URL}/${userId}`, updatedData)
     return response.data

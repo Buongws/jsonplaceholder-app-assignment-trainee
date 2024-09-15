@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { PhotoUsers } from '~/types/PhotoUsers'
 
+// Mock API URLs
 const API_URL = 'https://jsonplaceholder.typicode.com/users/:userId/albums'
-const ALBUM_URL = 'https://jsonplaceholder.typicode.com/albums' // URL for handling album deletions
+const ALBUM_URL = 'https://jsonplaceholder.typicode.com/albums'
 
 // Fetch albums by user ID
 export const fetchPhotoUsersByUserId = async (userId: string): Promise<PhotoUsers[]> => {
@@ -15,7 +16,7 @@ export const fetchPhotoUsersByUserId = async (userId: string): Promise<PhotoUser
   }
 }
 
-// Delete album by album ID
+// Delete album by custom album ID
 export const deletePhotoUserById = async (albumId: string): Promise<void> => {
   const deleteUrl = `${ALBUM_URL}/${albumId}`
   try {
@@ -26,12 +27,12 @@ export const deletePhotoUserById = async (albumId: string): Promise<void> => {
   }
 }
 
-// Add a new album
+// Add a new album with a custom ID (client-side unique ID)
 export const addPhotoUser = async (newPhotoUser: PhotoUsers): Promise<PhotoUsers> => {
   const addUrl = API_URL.replace(':userId', newPhotoUser.userId)
   try {
-    const response = await axios.post(addUrl, newPhotoUser)
-    return response.data
+    await axios.post(addUrl, newPhotoUser)
+    return { ...newPhotoUser }
   } catch (error) {
     console.error('Error adding album:', error)
     throw error

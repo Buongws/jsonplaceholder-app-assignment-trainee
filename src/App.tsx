@@ -1,8 +1,9 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, NavLink, Navigate } from 'react-router-dom'
 
 import UserPage from './pages/UserPage'
 import UserDetailsPage from './pages/UserDetailsPage '
+import PhotosPage from './pages/PhotoPage'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -10,15 +11,26 @@ const App: React.FC = () => {
   return (
     <Router>
       <div>
-        {/* Header Section */}
         <header className='header bg-dark py-2'>
           <nav className='headerNav container d-flex justify-content-start'>
-            <Link to='/users' className='text-white fw-bold'>
+            <NavLink
+              to='/users'
+              className={({ isActive }) => (isActive ? 'text-white fw-bold' : 'fw-normal')}
+              style={({ isActive }) => ({
+                color: isActive ? 'white' : 'hsla(0, 0%, 100%, .55)'
+              })}
+            >
               Users
-            </Link>
-            <Link to='/photos' className='text-white px-2 fw-bold'>
+            </NavLink>
+            <NavLink
+              to='/photos'
+              className={({ isActive }) => (isActive ? 'text-white px-2 fw-bold' : 'px-2 fw-normal')}
+              style={({ isActive }) => ({
+                color: isActive ? 'white' : 'hsla(0, 0%, 100%, .55)'
+              })}
+            >
               Photos
-            </Link>
+            </NavLink>
           </nav>
         </header>
 
@@ -26,6 +38,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path='/' element={<Navigate to='/users' />} />
           <Route path='/users' element={<UserPage />} />
+          <Route path='/photos' element={<PhotosPage />} />
           <Route path='/users/:userId' element={<UserDetailsPage />} />
         </Routes>
       </div>

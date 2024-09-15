@@ -1,7 +1,7 @@
 import React from 'react'
 import { User } from '../types/User'
 import { useNavigate } from 'react-router-dom'
-import { Table, Container } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 
 interface UserTableProps {
   users: User[]
@@ -48,4 +48,4 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
   )
 }
 
-export default UserTable
+export default React.memo(UserTable)
